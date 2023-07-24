@@ -1,0 +1,12 @@
+<!-- main_app/templates/answer_question.html -->
+{% extends 'base.html' %}
+{% block content %}
+    <h2>{{ question.title }}</h2>
+    <p>{{ question.content }}</p>
+    <small>Posted by {{ question.author.username }} on {{ question.created_at }}</small>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,16 @@
+<!-- main_app/templates/add_question.html -->
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Add a Question</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <label for="{{ form.tags.id_for_label }}">Tags:</label>
+        <select name="{{ form.tags.html_name }}" id="{{ form.tags.id_for_label }}" multiple>
+            {% for tag in tags %}
+                <option value="{{ tag.pk }}">{{ tag.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

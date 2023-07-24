@@ -1,0 +1,94 @@
+<!-- main_app/templates/home.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <style>
+        /* Container for the logout button */
+        .logout-container {
+            position: relative;
+        }
+
+        /* Logout button */
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <h1>Welcome, {{ user.username }}!</h1>
+
+    <!-- Logout button -->
+        <form method="post" action="{% url 'logout' %}" class="logout-button">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+
+
+        <!-- Ask a Question form -->
+        <h2>Ask a Question:</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ question_form.as_p }}
+            <button type="submit">Post Question</button>
+        </form>
+
+        <!-- Display the list of questions -->
+        <h2>Questions:</h2>
+        <ul>
+            {% for question in questions %}
+                <li>
+                    <h3>{{ question.title }}</h3>
+                    <p>{{ question.content }}</p>
+                    <p>Posted by: {{ question.author.username }}</p>
+                    <p>Posted at: {{ question.created_at }}</p>
+
+                    <!-- Display answers for the current question -->
+                    <h4>Answers:</h4>
+                    <ul>
+                        {% for answer in question.answer_set.all %}
+                            <li>
+                                <p>{{ answer.content }}</p>
+                                <p>Posted by: {{ answer.author.username }}</p>
+                                <p>Posted at: {{ answer.created_at }}</p>
+                            </li>
+                        {% empty %}
+                            <li>No answers yet.</li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Answer form for the current question -->
+                    <h5>Post an Answer:</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ answer_form.as_p }}
+                        <input type="hidden" name="question_id" value="{{ question.id }}">
+                        <button type="submit">Post Answer</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Comment form for the answers -->
+        <h2>Add a Comment:</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Post Comment</button>
+        </form>
+    {% else %}
+        <p>Please log in to ask, answer, and post questions.</p>
+    {% endif %}
+
+    <!-- Display the list of tags -->
+    <h2>Tags:</h2>
+    <ul>
+        {% for tag in tags %}
+            <li>{{ tag.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
